@@ -7,7 +7,7 @@ enum AudioStatus {
   Undefined,
   Playing,
   Paused,
-  Released,
+  Released
 }
 
 @ObservedV2
@@ -34,7 +34,7 @@ export class AudioService {
     this.clearProgressUpdater();
     this.progressTimer = setInterval(() => {
       this.progress = this.getCurrentProgressPercentage();
-      console.log(`Progress: ${this.progress}%`);
+      console.info(`Progress: ${this.progress}%`);
     }, 1000);
   }
 
@@ -64,7 +64,7 @@ export class AudioService {
         case 'initialized':
           avPlayer.audioRendererInfo = {
             usage: audio.StreamUsage.STREAM_USAGE_MUSIC,
-            rendererFlags: 0,
+            rendererFlags: 0
           };
           avPlayer.prepare();
           break;
@@ -91,15 +91,14 @@ export class AudioService {
     });
   }
 
-  public async playEmbeddedMp3(fileName: string) {
+  public async playEmbeddedMp3(fileName: string, context: common.UIAbilityContext) {
     this.release();
-    const context = getContext(this) as common.UIAbilityContext;
     const resourceFd = await context.resourceManager.getRawFd(fileName);
 
     const avFileDescriptor: media.AVFileDescriptor = {
       fd: resourceFd.fd,
       offset: resourceFd.offset,
-      length: resourceFd.length,
+      length: resourceFd.length
     };
     this.player = await media.createAVPlayer();
     this.setCallbacks(this.player);

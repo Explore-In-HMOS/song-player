@@ -1,19 +1,20 @@
-import { SongModel } from "../models/SongModel";
-import { AudioService, AudioStatus } from "../services/AudioService";
-import { getParams } from "../utils/RouterUtils";
-import { router } from "@kit.ArkUI";
+import { SongModel } from '../models/SongModel';
+import { AudioService, AudioStatus } from '../services/AudioService';
+import { common } from '@kit.AbilityKit';
+import { NavigationService } from '../services/NavigationService';
 
 @Entry
 @Component
 export struct SongPage {
   audioService: AudioService = AudioService.getInstance();
   @State song: SongModel = SongModel.empty();
-  @State receivedSongData: string = '';
+  receivedSongData: string = '';
+  navigationService: NavigationService = NavigationService.getInstance();
 
   aboutToAppear(): void {
-    let paramObject = getParams() as SongModel
+    let paramObject = this.navigationService.pageInfos.getParamByName('SongPage')[0] as SongModel
     this.song = paramObject
-    console.log(this.song.songName)
+    console.info(this.song.songName)
   }
 
   onBackPress(): boolean {
@@ -49,7 +50,7 @@ export struct SongPage {
               .align(Alignment.TopStart)
               .margin({ top: 15, left: 15 })
               .onClick(() => {
-                router.back()
+                this.navigationService.pageInfos.pop()
               })
             }
             .width('100%')
@@ -72,7 +73,7 @@ export struct SongPage {
           }.alignItems(HorizontalAlign.Start);
 
 
-          Image(this.audioService.audioStatus == AudioStatus.Playing ? $r('app.media.ic_pause') :
+          Image(this.audioService.audioStatus === AudioStatus.Playing ? $r('app.media.ic_pause') :
           $r('app.media.ic_play'))
             .width(30)
             .height(30)
@@ -164,7 +165,8 @@ export struct SongPage {
   }
 
   async startAudio(songModel: SongModel) {
-    await this.audioService.playEmbeddedMp3(songModel.songPath);
+    await this.audioService.playEmbeddedMp3(songModel.songPath,
+      this.getUIContext().getHostContext() as common.UIAbilityContext);
   }
 
   pauseAudio() {

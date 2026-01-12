@@ -1,14 +1,15 @@
 import lottie, { AnimationItem } from '@ohos/lottie';
-import { router } from '@kit.ArkUI';
+import { NavigationService } from '../services/NavigationService';
 
 @Entry
 @Component
-struct SearchPage {
+export struct ScanPage {
   private politeChickyController: CanvasRenderingContext2D = new CanvasRenderingContext2D();
   private politeChicky: string = 'politeChicky';
   private politeChickyPath: string = 'rawfile/scanning.json';
   private animateItem?: AnimationItem;
-  @State private statusText: string = "Listening for music";
+  @State private statusText: string = 'Listening for music';
+  navigationService: NavigationService = NavigationService.getInstance();
 
   onBackPress(): boolean {
     return true;
@@ -27,15 +28,15 @@ struct SearchPage {
             loop: true,
             autoplay: true,
             name: this.politeChicky,
-            path: this.politeChickyPath,
+            path: this.politeChickyPath
           });
 
           setTimeout(() => {
-            this.statusText = "Searching, please wait";
+            this.statusText = 'Searching, please wait';
           }, 4000);
 
           setTimeout(() => {
-            router.pushUrl({ url: 'pages/ListPage' });
+            this.navigationService.pageInfos.pushPath({ name: 'ListPage' })
           }, 7000);
         })
 
@@ -44,7 +45,7 @@ struct SearchPage {
         .fontSize(12)
         .fontWeight(FontWeight.Bolder)
 
-      Text("Make sure your device can hear the song clearly")
+      Text('Make sure your device can hear the song clearly')
         .fontSize(8)
         .fontColor(Color.Gray)
     }

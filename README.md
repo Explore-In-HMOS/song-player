@@ -7,10 +7,10 @@ This is a practical music recognition and recommendation app, built with ArkTS a
 # Preview
 
 <div>
-    <img src="screenshots/output1.png" width="25%" />
-    <img src="screenshots/output2.png" width="25%" />
-    <img src="screenshots/output3.png" width="25%" />
-</div>
+<img src="screenshots/output1.png" width="24%" />
+<img src="screenshots/output2.png" width="24%" />
+<img src="screenshots/output3.png" width="24%" />
+ </div>
 
 # Use Cases
 
@@ -31,17 +31,13 @@ This demo application provides:
 - `@kit.AudioKit`
 - `@kit.AbilityKit`
 - `@kit.ArkUI`
-- `@ohos.router`
 - `@ohos/lottie`
 
-# Project Directory
+# Directory Structure
 
 ```
 entry/src/main/ets/
 ets/
-│
-├── common/
-│   └── utils.ets
 │
 ├── components/
 │   ├── PlayPauseButton.ets
@@ -71,13 +67,13 @@ ets/
 │
 ├── services/
 │   └── AudioService.ets
+│   └── NavigationService.ets
 │
 ├── utils/
 │   ├── AVSessionController.ets
 │   ├── BackgroundUtil.ets
 │   ├── MediaController.ets
 │   ├── MediaTools.ets
-│   ├── RouterUtils.ets
 │   └── SongData.ets
 │
 └── viewmodel/

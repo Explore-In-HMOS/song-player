@@ -9,7 +9,7 @@ import { SongData } from './SongData';
 
 export class AVSessionController {
   private context: common.UIAbilityContext | undefined = undefined;
-  private AVSession: avSession.AVSession | undefined = undefined;
+  private avSession: avSession.AVSession | undefined = undefined;
   private songList: SongData[] = [];
   private musicIndex: number | undefined = undefined;
   private mediaController: MediaController | undefined = undefined;
@@ -43,9 +43,9 @@ export class AVSessionController {
       hilog.info(audioDomain, audioPrefix, `session create failed : mediaController is undefined`);
       return;
     }
-    this.AVSession = await avSession.createAVSession(this.context, 'PLAY_AUDIO', 'audio');
-    await this.AVSession.activate();
-    hilog.info(audioDomain, audioPrefix, `session create successed : sessionId : ${this.AVSession.sessionId}`);
+    this.avSession = await avSession.createAVSession(this.context, 'PLAY_AUDIO', 'audio');
+    await this.avSession.activate();
+    hilog.info(audioDomain, audioPrefix, `session create successed : sessionId : ${this.avSession.sessionId}`);
     await this.setAVMetadata();
     this.setLaunchAbility();
     this.setListenerForMesFromController();
@@ -67,22 +67,21 @@ export class AVSessionController {
       wantAgentFlags: [wantAgent.WantAgentFlags.UPDATE_PRESENT_FLAG]
     };
     wantAgent.getWantAgent(wantAgentInfo).then((agent) => {
-      if (this.AVSession) {
-        this.AVSession.setLaunchAbility(agent);
+      if (this.avSession) {
+        this.avSession.setLaunchAbility(agent);
       }
     });
   }
 
   private getFirst(): boolean | undefined {
     if (!this.mediaController) {
-      return;
+      return undefined;
     }
     return this.mediaController.getFirst();
   }
 
   public async setAVMetadata() {
     this.musicIndex = AppStorage.get('selectIndex');
-    hilog.info(audioDomain, audioPrefix, 'current musicIndex is:' + this.musicIndex);
     if (this.musicIndex === undefined) {
       this.musicIndex = 0;
     }
@@ -92,16 +91,15 @@ export class AVSessionController {
           this.context,
           this.songList[this.musicIndex].artwork as resourceManager.Resource
         );
-        hilog.info(audioDomain, audioPrefix, 'getPixelMapFromResource success' + JSON.stringify(mediaImage));
         let metadata: avSession.AVMetadata = {
           assetId: `${this.musicIndex}`,
           title: this.songList[this.musicIndex].title,
           artist: this.songList[this.musicIndex].artist,
           mediaImage: mediaImage,
-          duration: this.getDuration(),
+          duration: this.getDuration()
         };
-        if (this.AVSession) {
-          this.AVSession.setAVMetadata(metadata).then(() => {
+        if (this.avSession) {
+          this.avSession.setAVMetadata(metadata).then(() => {
             hilog.info(audioDomain, audioPrefix, 'SetAVMetadata successfully');
           }).catch((err: BusinessError) => {
             hilog.error(audioDomain, audioPrefix,
@@ -115,14 +113,14 @@ export class AVSessionController {
   }
 
   async setListenerForMesFromController() {
-    if (!this.AVSession) {
+    if (!this.avSession) {
       return;
     }
-    this.AVSession.on('play', this.playCall);
-    this.AVSession.on('pause', this.pauseCall);
-    this.AVSession.on('playNext', this.playNextCall);
-    this.AVSession.on('playPrevious', this.playPreviousCall);
-    this.AVSession.on('seek', this.seekCall);
+    this.avSession.on('play', this.playCall);
+    this.avSession.on('pause', this.pauseCall);
+    this.avSession.on('playNext', this.playNextCall);
+    this.avSession.on('playPrevious', this.playPreviousCall);
+    this.avSession.on('seek', this.seekCall);
   }
 
   private playCall: () => void = () => {
@@ -174,14 +172,14 @@ export class AVSessionController {
     let duration: number | undefined = AppStorage.get('totalMsTime');
     if (!duration) {
       hilog.error(audioDomain, audioPrefix, 'get duration failed');
-      return;
+      return undefined;
     }
     return duration;
   }
 
   public setProgressState(ms: number) {
-    if (this.AVSession) {
-      this.AVSession.setAVPlaybackState({
+    if (this.avSession) {
+      this.avSession.setAVPlaybackState({
         position: {
           elapsedTime: ms,
           updateTime: new Date().getTime()
@@ -196,9 +194,9 @@ export class AVSessionController {
   }
 
   public setPlayState(isPlay: boolean) {
-    if (this.AVSession) {
-      this.AVSession.setAVPlaybackState({
-        state: isPlay ? avSession.PlaybackState.PLAYBACK_STATE_PLAY : avSession.PlaybackState.PLAYBACK_STATE_PAUSE,
+    if (this.avSession) {
+      this.avSession.setAVPlaybackState({
+        state: isPlay ? avSession.PlaybackState.PLAYBACK_STATE_PLAY : avSession.PlaybackState.PLAYBACK_STATE_PAUSE
       }, (err: BusinessError) => {
         if (err) {
           hilog.error(audioDomain, audioPrefix,
@@ -211,13 +209,13 @@ export class AVSessionController {
   }
 
   async unregisterSessionListener() {
-    if (!this.AVSession) {
+    if (!this.avSession) {
       return;
     }
-    this.AVSession.off('play');
-    this.AVSession.off('pause');
-    this.AVSession.off('playNext');
-    this.AVSession.off('playPrevious');
-    this.AVSession.off('seek');
+    this.avSession.off('play');
+    this.avSession.off('pause');
+    this.avSession.off('playNext');
+    this.avSession.off('playPrevious');
+    this.avSession.off('seek');
   }
 }

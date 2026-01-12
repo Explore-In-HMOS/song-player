@@ -4,13 +4,12 @@ import {
   ArcListItem,
   ArcListAttribute,
   ArcListItemAttribute,
-  ComponentContent,
+  ComponentContent
 } from '@kit.ArkUI';
 import { SongCardComponent } from '../components/SongCardComponent';
 import { AppFontSize } from '../constants/AppFontSize';
 import WearableViewModel from '../viewmodel/WearableViewModel';
 import { SongModel } from '../models/SongModel';
-import { routePageWithObjectParams } from '../utils/RouterUtils';
 
 @Builder
 function buildText() {
@@ -28,7 +27,7 @@ function buildText() {
 
 @Entry
 @Component
-struct ListPage {
+export struct ListPage {
   private viewModel: WearableViewModel = new WearableViewModel();
   @State songs: SongModel[] = [];
   @StorageLink('selectIndex') selectIndex: number = 0;
@@ -46,7 +45,7 @@ struct ListPage {
   build() {
     Column() {
       ArcList({ initialIndex: 0, header: this.tabBar1 }) {
-        ForEach(this.songs, (song: SongModel, index: number) => {
+        ForEach(this.songs, (song: SongModel) => {
           ArcListItem() {
             SongCardComponent({
               image: {
@@ -67,11 +66,8 @@ struct ListPage {
             })
           }
           .onClick(() => {
-            this.selectIndex = index;
-            routePageWithObjectParams(
-              'pages/SongPage',
-              song
-            )
+            this.selectIndex = this.songs.indexOf(song);
+            this.viewModel.navigateToPage('SongPage', song);
           })
           .backgroundColor($r('app.color.card_background_color'))
           .width('80%')

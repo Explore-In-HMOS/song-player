@@ -1,4 +1,3 @@
-
 import { SizeConstants } from '../constants/SizeConstants';
 
 @Component
@@ -40,11 +39,10 @@ export struct PlayPauseButton {
     .height(SizeConstants.HEIGHT_PERCENT_40)
     .alignContent(Alignment.Center)
     .onClick(() => {
-      if(this.isPlay){
-        this.isPlay=false
-      }
-      else{
-        this.isPlay=true
+      if (this.isPlay) {
+        this.isPlay = false
+      } else {
+        this.isPlay = true
       }
     })
   }
