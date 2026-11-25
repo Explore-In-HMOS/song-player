@@ -2,7 +2,7 @@
 
 # Song Player
 
-This is a practical music recognition and recommendation app, built with ArkTS and ArkUI with intuitive animations, designed for HarmonyOS NEXT wearable devices. It leverages AudioKit and MediaKit and offers a seamless audio experience with circular screen support.
+This is a practical music recognition and recommendation app, built with ArkTS and ArkUI with intuitive animations, designed for HarmonyOS wearable devices. It leverages AudioKit and MediaKit and offers a seamless audio experience with circular screen support.
 
 # Preview
 
